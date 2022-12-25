@@ -29,6 +29,12 @@ export const Users = [
         userName: 'Bukayo Saka',
 
     },
+    {
+        id: 6,
+        profilePicture: 'asset/3.jpg',
+        userName: 'Steadfast',
+
+    },
 
 ]
 
@@ -122,6 +128,16 @@ export const Posts = [
         userId: 3,
         like: 32,
         comment: 9
+
+    },
+    {
+        id: 10,
+        desc: "I no dey hear word",
+        photo: "",
+        date: '13 mins ago',
+        userId: 6,
+        like: 3222,
+        comment: 900
 
     },
 ]
