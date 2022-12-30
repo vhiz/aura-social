@@ -3,6 +3,7 @@
     position: sticky;
     top: 50px;
     height: calc(100vh - 50px);
+    overflow-y: auto;
 }
 
 .rightbarWrapper {
@@ -45,7 +46,7 @@
     margin-bottom: 15px;
 }
 
-.rightbarTitle{
+.rightbarTitle {
     color: wheat;
     font-size: 18px;
     font-weight: bolder;
@@ -53,33 +54,33 @@
 }
 
 
-.rightbarInfo{
+.rightbarInfo {
     margin-bottom: 30px;
 }
 
-.rightbarInfoItem{
+.rightbarInfoItem {
     margin-bottom: 10px;
 }
 
-.rightbarInfoKey{
+.rightbarInfoKey {
     font-weight: 500;
     color: rgb(240, 223, 191);
     margin-right: 15px;
 }
 
-.rightbarInfoValue{
+.rightbarInfoValue {
     color: wheat;
     font-weight: 300;
 
 }
 
-.rightbarFollowings{
+.rightbarFollowings {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
 
-.rightbarFollowing{
+.rightbarFollowing {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
@@ -87,13 +88,33 @@
     align-items: center;
 }
 
-.rightbarFollowingName{
+.rightbarFollowingName {
     color: wheat;
 
 }
-.rightbarFollowingImg{
+
+.rightbarFollowingImg {
     width: 100px;
     height: 100px;
     object-fit: cover;
     border-radius: 5px;
+}
+
+.rightBarFollow {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    border: none;
+    background-color: yellow;
+    color: rgb(0, 0, 0);
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.rightBarFollow:focus {
+    outline: none;
 }

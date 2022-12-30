@@ -46,7 +46,7 @@ router.put('/:id/like', async (req, res) => {
         res.status(200).send('post has been liked')
     } else {
         await post.updateOne({ $pull: { likes: userId } })
-        res.status(200).send('posgt has been unliked')
+        res.status(200).send('post has been unliked')
     }
 })
 //get a post
@@ -58,9 +58,9 @@ router.get('/:id', async (req, res) => {
 
 
 // get timeline post
-router.get('/timeline/all', async (req, res) => {
-    const { params: { id }, body: { userId } } = req
-    const currentUser = await User.findById(userId)
+router.get('/timeline/:id', async (req, res) => {
+    const { params: { id }} = req
+    const currentUser = await User.findById(id)
 
     const userPosts = await Post.find({userId: currentUser._id})
     const friendPosts = await Promise.all(
@@ -68,7 +68,16 @@ router.get('/timeline/all', async (req, res) => {
             return Post.find({userId: friendId})
         })
     )
-    res.json(userPosts.concat(...friendPosts))
+    res.status(200).json(userPosts.concat(...friendPosts))
+})
+
+//individual post
+router.get('/:id/mine', async(req, res)=>{
+    const { params: { id }} = req
+    const currentUser = await User.findById(id)
+    const userPosts = await Post.find({userId: currentUser._id})
+
+    res.status(200).json(userPosts)
 })
 
 module.exports = router

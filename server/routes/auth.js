@@ -9,7 +9,8 @@ router.post('/register', async (req, res) => {
     const newUser = new User({
         username: req.body.username,
         email: req.body.email,
-        password: hashed
+        password: hashed,
+        phoneno: req.body.phoneno
     })
 
     try {
@@ -28,7 +29,8 @@ router.post('/login', async (req, res) => {
     const valid = await compare(req.body.password, user.password)
     if (!valid) return res.status(400).send('invalid password')
 
-    res.status(200).send(user)
+    const { password, updatedAt, ...other } = user._doc
+    res.status(200).send(other)
 })
 
 module.exports = router

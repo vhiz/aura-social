@@ -2,9 +2,24 @@ import './rightbar.css'
 import CakeIcon from '@mui/icons-material/Cake';
 import { Users } from "../../fake"
 import Online from '../online/Online';
-export default function Rightbar({ profile }) {
+import axios from 'axios';
+import { useContext, useEffect } from 'react';
+import { useState } from 'react';
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../contex/AuthContex';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
+
+
+export default function Rightbar({ user }) {
+  const PF = process.env.REACT_APP_PUBLIC_FILE
+
+  const id = useParams().id
   const HomeRightBar = () => {
+
+
     return (
       <>
         <div className="birthdayContanier">
@@ -13,7 +28,7 @@ export default function Rightbar({ profile }) {
             <b>Odegard</b> and <b>3 other people birthday na today. </b>
           </span>
         </div>
-        <img src="/asset/ad.jpg" alt="" className="rightbarAd" />
+        <img src={PF+"ad.jpg"} alt="" className="rightbarAd" />
         <h4 className="rightbarTitle">Online Friends</h4>
         <ul className="rightbarFriendList">
           {Users.map(u => (
@@ -25,51 +40,76 @@ export default function Rightbar({ profile }) {
   }
 
   const ProfileRightBar = () => {
+
+
+    const { user: currentUser, dispatch } = useContext(AuthContext)
+    const [friends, setFriends] = useState([])
+    const [followed, setFollowed] = useState(currentUser.followings.includes(user?.id))
+    useEffect(() => {
+      const getFriends = async () => {
+        try {
+          const friendList = await axios.get('http://localhost:3001/user/friend/' + id)
+          setFriends(friendList.data)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+      getFriends()
+    }, [id])
+
+    useEffect(() => {
+      setFollowed(currentUser.followings.includes(user?.id))
+    }, [currentUser, user.id])
+    const follow = async () => {
+      try {
+        if (!followed) {
+          await axios.put('http://localhost:3001/user/' + id + "/follow", { userId: currentUser._id })
+          dispatch({ type: "FOLLOW", payload: id })
+        } else {
+          await axios.put('http://localhost:3001/user/' + id + "/unfollow", { userId: currentUser._id })
+          dispatch({ type: "UNFOLLOW", payload: id })
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      setFollowed(!followed)
+    }
+
     return (
       <>
+        {user._id !== currentUser._id && (
+          <button className='rightBarFollow' onClick={follow}>
+            {followed ? "Unfollow" : "Follow"}
+            {followed ? <RemoveIcon /> : <AddIcon />}
+          </button>
+        )}
         <h4 className="rightbarTitle">User infromation</h4>
         <div className="rightbarInfo">
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">City:</span>
-            <span className="rightbarInfoValue">Abuja</span>
+            <span className="rightbarInfoValue">{user.city}</span>
           </div>
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">From:</span>
-            <span className="rightbarInfoValue">Abuja</span>
+            <span className="rightbarInfoValue">{user.from}</span>
           </div>
           <div className="rightbarInfoItem">
             <span className="rightbarInfoKey">Relationship:</span>
-            <span className="rightbarInfoValue">Single</span>
+            <span className="rightbarInfoValue">{user.relationship === 1 ? "Single" : user.relationship === 2 ? "Married" : "-"}</span>
           </div>
         </div>
         <h4 className="rightbarTitle">User Friends</h4>
         <div className="rightbarFollowings">
-          <div className="rightbarFollowing">
-            <img src="asset/1.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingName">Vhiz</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="asset/2.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingName">Vhiz</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="asset/3.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingName">Vhiz</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="asset/4.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingName">Vhiz</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="asset/5.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingName">Vhiz</span>
-          </div>
-          <div className="rightbarFollowing">
-            <img src="asset/2.jpg" alt="" className="rightbarFollowingImg" />
-            <span className="rightbarFollowingName">Vhiz</span>
-          </div>
+          {friends.map(friend => (
+            <Link to={'/profile/' + friend._id} style={{ textDecoration: "none" }}>
+              <div className="rightbarFollowing">
+                <img src={friend.profilePicture ? PF+friend.profilePicture : PF + 'cover.png'} alt="" className="rightbarFollowingImg" />
+                <span className="rightbarFollowingName">{friend.username}</span>
+              </div>
+            </Link>
+          ))}
         </div>
-        <img src="/asset/ad2.jpg" alt="" className="rightbarAd" />
+        <img src={PF + "ad2.jpg"} alt="" className="rightbarAd" />
       </>
     )
   }
@@ -77,7 +117,7 @@ export default function Rightbar({ profile }) {
   return (
     <div className='rightbar'>
       <div className="rightbarWrapper">
-        {profile ? <ProfileRightBar /> : <HomeRightBar />}
+        {user ? <ProfileRightBar /> : <HomeRightBar />}
       </div>
     </div>
   )

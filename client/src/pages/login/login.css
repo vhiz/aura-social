@@ -21,7 +21,7 @@
     justify-content: center;
 }
 
-.loginLogo{
+.loginLogo {
     font-family: 'Dancing Script', cursive;
     font-size: 100px;
     font-weight: bolder;
@@ -29,13 +29,13 @@
     color: wheat;
 }
 
-.loginDesc{
-   font-size: 30px;
-   font-family: 'Dancing Script', cursive; 
-   color: wheat;
+.loginDesc {
+    font-size: 30px;
+    font-family: 'Dancing Script', cursive;
+    color: wheat;
 }
 
-.loginBox{
+.loginBox {
     height: 300px;
     padding: 20px;
     background-color: rgb(255, 255, 0);
@@ -45,7 +45,7 @@
     justify-content: space-between;
 }
 
-.loginInput{
+.loginInput {
     height: 50px;
     border-radius: 10px;
     border: 1px solid gray;
@@ -54,11 +54,11 @@
     padding-left: 20px;
 }
 
-.loginInput:focus{
+.loginInput:focus {
     outline: none;
 }
 
-.loginButton{
+.loginButton {
     height: 50px;
     border-radius: 10px;
     border: none;
@@ -69,12 +69,16 @@
     cursor: pointer;
 }
 
-.loginForgot{
+.loginButton:disabled {
+    cursor: not-allowed
+}
+
+.loginForgot {
     text-align: center;
     color: black;
 }
 
-.loginRegisterButton{
+.loginRegisterButton {
     height: 50px;
     border-radius: 10px;
     border: none;
@@ -84,4 +88,3 @@
     font-weight: 500;
     cursor: pointer;
 }
-

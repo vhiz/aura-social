@@ -51,6 +51,10 @@ const userSchema = new Schema({
         type: Number,
         enum: [1, 2, 3]
     },
+    phoneno:{
+        type: Number,
+        require: true
+    }
 }, { timestamps: true })
 
 module.exports = model("User", userSchema)
