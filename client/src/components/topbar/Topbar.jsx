@@ -3,14 +3,25 @@ import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import Person4Icon from '@mui/icons-material/Person4';
 import ChatIcon from '@mui/icons-material/Chat';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
 import { useContext } from "react";
 import { AuthContext } from "../../contex/AuthContex";
 
 export default function Topbar() {
     const PF = process.env.REACT_APP_PUBLIC_FILE
 
+    const navigate = useNavigate()
     const {user} = useContext(AuthContext)
+
+    const handleClick = async(e)=>{
+        e.preventDefault()
+        try {
+            localStorage.setItem("user", null)
+            window.location.reload()
+        } catch (error) {
+            console.log(error);
+        }
+    }
     return (
         <div className="topbarContainer">
             <div className="topbarLeft">
@@ -26,7 +37,6 @@ export default function Topbar() {
             </div>
             <div className="topbarRight">
                 <div className="topbarLinks">
-                    <span className="topbarLink">Homepage</span>
                     <span className="topbarLink">Timeline</span>
                 </div>
                 <div className="topbarIcons">
@@ -34,10 +44,12 @@ export default function Topbar() {
                         <Person4Icon />
                         <span className="topbarIconBadge">1</span>
                     </div>
+                    <Link to='/mensenger' style={{textDecoration: 'none'}}>
                     <div className="topbarIconItem">
                         <ChatIcon />
                         <span className="topbarIconBadge">1</span>
                     </div>
+                    </Link>
                     <div className="topbarIconItem">
                         <NotificationsActiveIcon />
                         <span className="topbarIconBadge">1</span>
@@ -46,6 +58,9 @@ export default function Topbar() {
                 <Link to={`/profile/${user._id}`}>
                 <img src={!user.profilePicture ?PF+"cover.png" :PF + user.profilePicture} alt="" className="topbarImg" />
                 </Link>
+            </div>
+            <div className="topbarEnd">
+                <button className="Logout" onClick={handleClick}>logout</button>
             </div>
         </div>
     )

@@ -9,13 +9,14 @@ const path = require('path')
 const multer = require('multer')
 
 
+
 //routes
 const authroute = require('./routes/auth')
 const userroute = require('./routes/user')
 const postroute = require('./routes/post')
 const conversationroute = require('./routes/conversations')
 const messageroute = require('./routes/messages')
-
+const groupConverastion = require('./routes/groupConversation')
 
 mongoose.set('strictQuery', false)
 mongoose.connect(process.env.MONGOURI, (err) => {
@@ -56,6 +57,10 @@ app.use('/user', userroute)
 app.use('/post', postroute)
 app.use('/message', messageroute)
 app.use('/conversation', conversationroute)
+app.use('/groupconversation', groupConverastion)
+
+
+
 const Port = process.env.PORT || 3001
 app.listen(Port, (err) => {
     if (err) {

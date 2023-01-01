@@ -3,7 +3,6 @@
     height: calc(100vh - 50px);
     display: flex;
 
-
 }
 
 .chatMenu {
@@ -99,4 +98,9 @@
     font-size: 50px;
     cursor: default;
     text-align: center;
+}
+
+.shareIcon{
+    font-size: 18px;
+    margin: 3px;
 }

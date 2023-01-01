@@ -13,6 +13,7 @@ import { useContext } from "react";
 import { AuthContext } from "./contex/AuthContex";
 
 
+
 function App() {
 
   const {user} = useContext(AuthContext)
@@ -23,7 +24,7 @@ function App() {
         <Route path="/login" element={user ?< Navigate to={"/"}/> :<Login />} />
         <Route path="/register" element={user ? < Navigate to={"/"} /> : <Register />} />
         <Route path="/mensenger" element={!user ? < Navigate to={"/"} /> : <Mensenger />} />
-        <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/profile/:id" element={user ?<Profile /> : <Navigate to={'/'}/>} />
       </Routes>
     </Router>
   )

@@ -9,7 +9,9 @@ import { AuthContext } from '../../contex/AuthContex'
 import './mesenger.css'
 import axios from 'axios'
 import { useRef } from 'react'
-
+import { io } from 'socket.io-client'
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import CancleIcon from '@mui/icons-material/Cancel'
 
 
 export default function Messenger() {
@@ -18,8 +20,38 @@ export default function Messenger() {
   const [currentChat, setCurrentChat] = useState(null)
   const [messages, setMessages] = useState([])
   const [newMessage, setNewMessage] = useState('')
+  const [arrivalMessage, setArrivalMessage] = useState(null)
+  const [onlineUsers, setOnlineUsers] = useState([])
+  const [file, setFile] = useState(null)
+  const socket = useRef()
   const { user } = useContext(AuthContext)
   const scrollReff = useRef()
+
+
+  useEffect(() => {
+    socket.current = io("ws://localhost:3002")
+    socket.current.on('getMessage', data => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+        img: data.img
+      })
+    })
+  }, [])
+
+  useEffect(() => {
+    arrivalMessage && currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage])
+  }, [arrivalMessage, currentChat])
+
+
+  useEffect(() => {
+    socket.current.emit('addUser', user._id)
+    socket.current.on('getUsers', users => {
+      setOnlineUsers(user.followings.filter((f) => users.some((u) => u.userId === f)))
+    })
+  }, [user])
 
   useEffect(() => {
     const getConversations = async () => {
@@ -48,6 +80,7 @@ export default function Messenger() {
   }, [currentChat])
 
 
+  const receiverId = currentChat?.members.find(member => member !== user._id)
   const handleMessage = async (e) => {
     e.preventDefault();
     const message = {
@@ -56,15 +89,47 @@ export default function Messenger() {
       conversationId: currentChat._id
     }
 
+    if (file) {
+      const fileName = Date.now() + file.name
+      const data = new FormData()
+      data.append("name", fileName)
+      data.append("file", file)
+      message.img = fileName
+
+      socket.current.emit('sendMessage', {
+        senderId: user._id,
+        receiverId,
+        text: newMessage,
+        img: fileName
+      })
+      try {
+        await axios.post('http://localhost:3001/upload', data)
+      } catch (error) {
+        console.log(error)
+      }
+    }else if(!file){
+ 
+      socket.current.emit('sendMessage', {
+        senderId: user._id,
+        receiverId,
+        text: newMessage,
+      })
+    }
+
+
+
     try {
       const res = await axios.post(`http://localhost:3001/message`, message)
       setMessages([...messages, res.data])
       setNewMessage('')
+      setFile(null)
     } catch (error) {
       console.log(error)
     }
 
   }
+
+
 
   useEffect(() => {
     scrollReff.current?.scrollIntoView({ behavior: "smooth" })
@@ -90,14 +155,24 @@ export default function Messenger() {
               currentChat ? (
                 <>
                   <div className="chatBoxTop">
-                    {messages.map(m=>(
+                    {messages.map(m => (
                       <div ref={scrollReff}>
-                      <Message message={m} own={m.sender === user._id}/>
+                        <Message message={m} own={m.sender === user._id} />
                       </div>
                     ))}
                   </div>
                   <div className="chatBoxBottom">
                     <textarea placeholder='Chat with Aura....' className="chatMessageInput" onChange={(e) => setNewMessage(e.target.value)} value={newMessage}></textarea>
+                    <label htmlFor='file' className="shareOption">
+                      < AnalyticsIcon htmlColor='wheat' className="shareIcon" />
+                      {file && (
+                        <div className="shareImgContanier">
+                          <img src={URL.createObjectURL(file)} alt="" className="shareImg" />
+                          <CancleIcon className='shareCancle' onClick={() => setFile(null)} />
+                        </div>
+                      )}
+                      <input style={{ display: "none" }} type="file" id="file" accept='.png,.jpg,.jpeg' onChange={(e) => setFile(e.target.files[0])} />
+                    </label>
                     <button className="chatSubmitButton" onClick={handleMessage}>Send</button>
                   </div>
                 </>) : (<span className='noConversation'>Chat With Someone</span>
@@ -106,10 +181,7 @@ export default function Messenger() {
         </div>
         <div className="chatOnline">
           <div className="chatOnlineWrapper">
-            <ChatOnline />
-            <ChatOnline />
-            <ChatOnline />
-            <ChatOnline />
+            <ChatOnline onlineUsers={onlineUsers} currentId={user._id} setCurrentChat={setCurrentChat} />
           </div>
         </div>
       </div>

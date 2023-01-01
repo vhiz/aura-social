@@ -61,8 +61,7 @@ export default function Post({ post }) {
                 </div>
                 <div className="postBottom">
                     <div className="postBottomLeft">
-                        <FavoriteIcon htmlColor='white' className='likeIcon' onClick={likeHandeler} />
-                        <ThumbUpSharpIcon htmlColor='white' className='likeIcon' onClick={likeHandeler} />
+                        {isliked ?<FavoriteIcon htmlColor='red' className='likeIcon' onClick={likeHandeler} /> : <FavoriteIcon htmlColor='white' className='likeIcon' onClick={likeHandeler} />}
                         <span className="postlikeCounter">{like} likes</span>
                     </div>
                     <div className="postBottomRight">

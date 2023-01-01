@@ -118,3 +118,40 @@
 .rightBarFollow:focus {
     outline: none;
 }
+
+.messageIconDiv {
+    display: flex;
+    cursor: pointer;
+    width: 120px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+
+.messageIcon {
+    width: 30px;
+    height: 30px;
+}
+
+.messageIconText {
+    color: wheat;
+    margin-left: 10px;
+}
+
+.editDiv {
+    display: flex;
+    cursor: pointer;
+    width: 120px;
+    margin-bottom: 20px;
+}
+
+.editIcon{
+    width: 30px;
+    height: 30px;
+}
+
+.editIconText{
+    color: wheat;
+    margin-left: 10px;
+}

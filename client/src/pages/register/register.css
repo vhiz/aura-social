@@ -86,3 +86,14 @@
     font-weight: 500;
     cursor: pointer;
 }
+
+.loginForgotButton {
+    height: 50px;
+    border-radius: 10px;
+    border: none;
+    color: rgb(241, 201, 201);
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+}

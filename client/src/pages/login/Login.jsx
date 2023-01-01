@@ -4,6 +4,7 @@ import { loginCall } from '../../apiCalls'
 import { AuthContext } from '../../contex/AuthContex'
 import './login.css'
 import CircularProgress from '@mui/material/CircularProgress';
+import { Link } from 'react-router-dom'
 
 export default function Login() {
 
@@ -15,7 +16,6 @@ export default function Login() {
         e.preventDefault()
         loginCall({ email: email.current.value, password: password.current.value }, dispatch)
     }
-    console.log(user)
     return (
         <div className='login'>
             <div className="loginWrapper">
@@ -29,8 +29,11 @@ export default function Login() {
                         <input type="password" className="loginInput" placeholder='Password' ref={password} required />
                         <button className="loginButton" type='submit' disabled={isFetching}>{isFetching ? <CircularProgress color='secondary' /> : "Log in"}</button>
                         <span className="loginForgot">Forgot Password?</span>
-                        <button className="loginRegisterButton">
-                            {isFetching ? <CircularProgress color='secondary' /> : "Register"}</button>
+                        <span className='loginForgotButton' >
+                            <Link style={{ textDecoration: 'none' }} to="/register">
+                                Register
+                            </Link>
+                        </span>
                     </div>
                 </form>
             </div>

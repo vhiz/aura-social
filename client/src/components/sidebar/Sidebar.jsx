@@ -9,21 +9,45 @@ import Groups2Icon from '@mui/icons-material/Groups2';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import ChatIcon from '@mui/icons-material/Chat';
 import Friend from '../friend/Friend';
-import { Users } from '../../fake';
+import { useContext, useEffect, useState } from 'react';
+import {AuthContext} from '../../contex/AuthContex'
+import axios from 'axios'
+import { Link } from 'react-router-dom';
+
 
 export default function Sidebar() {
+  const { user } = useContext(AuthContext)
+  const [friends, setFriends] = useState([])
+
+  useEffect(() => {
+    const getFriends = async () => {
+      try {
+        const friendList = await axios.get('http://localhost:3001/user/friend/' + user._id)
+        setFriends(friendList.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getFriends()
+  }, [user])
+
+
   return (
     <div className='sidebar'>
       <div className="sidebarWrapper">
         <ul className="sidebarList">
+          <Link to='/' style={{textDecoration: 'none'}}>
           <li className="sidebarListItem">
             <AodIcon className='sidebarIcon' />
             <span className="sidebarListItemText">Feed</span>
           </li>
+          </Link>
+          <Link to='/mensenger' style={{textDecoration: 'none'}}>
           <li className="sidebarListItem">
             <ChatIcon className='sidebarIcon' />
             <span className="sidebarListItemText">Chat</span>
           </li>
+          </Link>
           <li className="sidebarListItem">
             <PlayCircleIcon className='sidebarIcon' />
             <span className="sidebarListItemText">Videos</span>
@@ -56,9 +80,7 @@ export default function Sidebar() {
         <button className="sidebarButton">Show More</button>
         <hr className="sidebarHr" />
         <ul className="sidebarFriendList">
-          {Users.map(u=>(
-          <Friend key={u.id} friend={u} />
-          ))}
+            <Friend  friends={friends}/>
         </ul>
       </div>
     </div>

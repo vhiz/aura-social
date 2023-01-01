@@ -1,6 +1,8 @@
 const router = require('express').Router()
 const { hash, genSalt, compare } = require('bcrypt')
 const User = require('../model/User')
+const jwt = require('jsonwebtoken')
+require('dotenv/config')
 
 //REGISTER
 router.post('/register', async (req, res) => {
@@ -28,6 +30,8 @@ router.post('/login', async (req, res) => {
 
     const valid = await compare(req.body.password, user.password)
     if (!valid) return res.status(400).send('invalid password')
+
+    const token = jwt.sign({id: user._id}, process.env.TOKEN, {expiresIn:"24h"})
 
     const { password, updatedAt, ...other } = user._doc
     res.status(200).send(other)
